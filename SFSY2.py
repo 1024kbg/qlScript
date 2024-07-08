@@ -1700,7 +1700,7 @@ def down_file(filename, file_url):
 
 if __name__ == '__main__':
     APP_NAME = '顺丰速运'
-    ENV_NAME = 'SFSY'
+    ENV_NAME = 'SFSY2'
     CK_NAME = 'url'
     print(f'''
 ✨✨✨ {APP_NAME}脚本✨✨✨
