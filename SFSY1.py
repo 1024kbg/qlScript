@@ -1699,7 +1699,7 @@ def down_file(filename, file_url):
 
 
 if __name__ == '__main__':
-    APP_NAME = '顺丰速运'
+    APP_NAME = 'sfsy1'
     ENV_NAME = 'sfsy1'
     CK_NAME = 'url'
     print(f'''
