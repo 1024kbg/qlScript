@@ -461,309 +461,45 @@ class RUN:
         self.EAR_END_2023_GuessIdiom()
 
     def addDeliverPrefer(self):
-        print(f'>>>开始【{self.title}】任务')
-        json_data = {
-            "country": "中国",
-            "countryCode": "A000086000",
-            "province": "北京市",
-            "provinceCode": "A110000000",
-            "city": "北京市",
-            "cityCode": "A111000000",
-            "county": "东城区",
-            "countyCode": "A110101000",
-            "address": "1号楼1单元101",
-            "latitude": "",
-            "longitude": "",
-            "memberId": "",
-            "locationCode": "010",
-            "zoneCode": "CN",
-            "postCode": "",
-            "takeWay": "7",
-            "callBeforeDelivery": 'false',
-            "deliverTag": "2,3,4,1",
-            "deliverTagContent": "",
-            "startDeliverTime": "",
-            "selectCollection": 'false',
-            "serviceName": "",
-            "serviceCode": "",
-            "serviceType": "",
-            "serviceAddress": "",
-            "serviceDistance": "",
-            "serviceTime": "",
-            "serviceTelephone": "",
-            "channelCode": "RW11111",
-            "taskId": self.taskId,
-            "extJson": "{\"noDeliverDetail\":[]}"
-        }
-        url = 'https://ucmp.sf-express.com/cx-wechat-member/member/deliveryPreference/addDeliverPrefer'
-        response = self.do_request(url, data=json_data)
-        if response.get('success') == True:
-            print('新增一个收件偏好，成功')
-        else:
             print(f'>【{self.title}】任务-{response.get("errorMessage")}')
 
     def EAR_END_2023_ExchangeCard(self):
-        print(f'>>>开始积分兑换年卡')
-        json_data = {
-            "exchangeNum": 2,
-            "activityCode": "YEAR_END_2023",
-            "channelType": "MINI_PROGRAM"
-        }
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonNoLoginPost/~memberNonactivity~yearEnd2023TaskService~integralExchange'
-        response = self.do_request(url, data=json_data)
-        if response.get('success') == True:
-            receivedAccountList = response['obj']['receivedAccountList']
-            for card in receivedAccountList:
-                print(f'>获得：【{card["urrency"]}】卡【{card["amount"]}】张！')
-        else:
             print(f'>【{self.title}】任务-{response.get("errorMessage")}')
 
     def EAR_END_2023_getAward(self):
-        print(f'>>>开始抽卡')
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~yearEnd2023GardenPartyService~getAward'
-        for l in range(10):
-            for i in range(0, 3):
-                json_data = {
-                    "cardType": i
-                }
-                response = self.do_request(url, data=json_data)
-                # print(response)
-                if response.get('success') == True:
-                    receivedAccountList = response['obj']['receivedAccountList']
-                    for card in receivedAccountList:
-                        print(f'>获得：【{card["currency"]}】卡【{card["amount"]}】张！')
-                elif response.get('errorMessage') == '达到限流阈值，请稍后重试':
-                    break
-                elif response.get('errorMessage') == '用户信息失效，请退出重新进入':
-                    break
-                else:
-                    print(f'>抽卡失败：{response.get("errorMessage")}')
                 time.sleep(3)
 
     def EAR_END_2023_GuessIdiom(self):
-        print(f'>>>开始猜成语')
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~yearEnd2023GuessIdiomService~win'
-        for i in range(1, 11):
-            json_data = {
-                "index": i
-            }
-            response = self.do_request(url, data=json_data)
-            if response.get('success') == True:
-                print(f'第{i}关成功！')
-                # receivedAccountList = response['obj']['receivedAccountList']
-                # for card in receivedAccountList:
-                #     print(f'>获得：【{card["urrency"]}】卡【{card["amount"]}】张！')
-            else:
                 print(f'第{i}关失败！')
 
     def EAR_END_2023_receiveTask(self):
-        print(f'>>>开始领取【{self.title}】任务奖励')
-        json_data = {
-            "taskType": self.taskType,
-            "activityCode": "YEAR_END_2023",
-            "channelType": "MINI_PROGRAM"
-        }
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonNoLoginPost/~memberNonactivity~yearEnd2023TaskService~fetchMixTaskReward'
-        response = self.do_request(url, data=json_data)
-        if response.get('success') == True:
-            print(f'>【{self.title}】任务奖励领取成功！')
-        else:
             print(f'>【{self.title}】任务-{response.get("errorMessage")}')
 
     def anniversary2024_weekly_gift_status(self):
-        print(f'\n>>>>>>>开始周年庆任务')
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~anniversary2024IndexService~weeklyGiftStatus'
-        response = self.do_request(url)
-        if response.get('success') == True:
-            weekly_gift_list = response.get('obj', {}).get('weeklyGiftList', [])
-            for weekly_gift in weekly_gift_list:
-                if not weekly_gift.get('received'):
-                    receive_start_time = datetime.strptime(weekly_gift['receiveStartTime'], '%Y-%m-%d %H:%M:%S')
-                    receive_end_time = datetime.strptime(weekly_gift['receiveEndTime'], '%Y-%m-%d %H:%M:%S')
-                    current_time = datetime.now()
-                    # print(current_time)
-                    # print(receive_start_time)
-                    # print(receive_end_time)
-                    if receive_start_time <= current_time <= receive_end_time:
-                        self.anniversary2024_receive_weekly_gift()
-        else:
-            error_message = response.get('errorMessage') or json.dumps(response) or '无返回'
-            print(f'查询每周领券失败: {error_message}')
-            if '系统繁忙' in error_message or '用户手机号校验未通过' in error_message:
                 self.anniversary_black = True
 
     def anniversary2024_receive_weekly_gift(self):
-        print(f'>>>开始领取每周领券')
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~anniversary2024IndexService~receiveWeeklyGift'
-        response = self.do_request(url)
-        if response.get('success'):
-            product_names = [product['productName'] for product in response.get('obj', [])]
-            print(f'每周领券: {product_names}')
-        else:
-            error_message = response.get('errorMessage') or json.dumps(response) or '无返回'
-            print(f'每周领券失败: {error_message}')
-            if '系统繁忙' in error_message or '用户手机号校验未通过' in error_message:
                 self.anniversary_black = True
 
     def anniversary2024_taskList(self):
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~activityTaskService~taskList'
-        data = {
-            'activityCode': 'ANNIVERSARY_2024',
-            'channelType': 'MINI_PROGRAM'
-        }
-        response = self.do_request(url, data)
-        if response and response.get('success'):
-            tasks = response.get('obj', [])
-            # 过滤出状态为1的任务并尝试接收奖励
-            for task in filter(lambda x: x['status'] == 1, tasks):
-                if self.anniversary_black:
-                    return
-                for _ in range(task['canReceiveTokenNum']):
-                    self.anniversary2024_fetchMixTaskReward(task)
-            # 过滤出状态为2的任务并完成任务
-            for task in filter(lambda x: x['status'] == 2, tasks):
-                if self.anniversary_black:
-                    return
-                if task['taskType'] in ['PLAY_ACTIVITY_GAME', 'PLAY_HAPPY_ELIMINATION', 'PARTAKE_SUBJECT_GAME']:
-                    pass
-                elif task['taskType'] == 'FOLLOW_SFZHUNONG_VEDIO_ID':
-                    pass
-                elif task['taskType'] in ['BROWSE_VIP_CENTER', 'GUESS_GAME_TIP', 'CREATE_SFID', 'CLICK_MY_SETTING',
-                                          'CLICK_TEMPLATE', 'REAL_NAME', 'SEND_SUCCESS_RECALL', 'OPEN_SVIP',
-                                          'OPEN_FAST_CARD', 'FIRST_CHARGE_NEW_EXPRESS_CARD', 'CHARGE_NEW_EXPRESS_CARD',
-                                          'INTEGRAL_EXCHANGE']:
-                    pass
-                else:
-                    for _ in range(task['restFinishTime']):
-                        if self.anniversary_black:
-                            break
                         self.anniversary2024_finishTask(task)
 
     def anniversary2024_finishTask(self, task):
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonRoutePost/memberEs/taskRecord/finishTask'
-        data = {'taskCode': task['taskCode']}
-        response = self.do_request(url, data)
-        if response and response.get('success'):
-            print('完成任务[%s]成功' % task['taskName'])
-            # 完成任务后获取任务奖励的逻辑
-            self.anniversary2024_fetchMixTaskReward(task)
-        else:
-            print('完成任务[%s]失败: %s' % (
                 task['taskName'], response.get('errorMessage') or (json.dumps(response) if response else '无返回')))
 
     def anniversary2024_fetchMixTaskReward(self, task):
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~anniversary2024TaskService~fetchMixTaskReward'
-        data = {
-            'taskType': task['taskType'],
-            'activityCode': 'ANNIVERSARY_2024',
-            'channelType': 'MINI_PROGRAM'
-        }
-        response = self.do_request(url, data)
-        if response and response.get('success'):
-            reward_info = response.get('obj', {}).get('account', {})
-            received_list = [f"[{item['currency']}]X{item['amount']}" for item in
-                             reward_info.get('receivedAccountList', [])]
-            turned_award = reward_info.get('turnedAward', {})
-            if turned_award.get('productName'):
-                received_list.append(f"[优惠券]{turned_award['productName']}")
-            print('领取任务[%s]奖励: %s' % (task['taskName'], ', '.join(received_list)))
-        else:
-            error_message = response.get('errorMessage') or json.dumps(response) or '无返回'
-            print('领取任务[%s]奖励失败: %s' % (task['taskName'], error_message))
-            if '用户手机号校验未通过' in error_message:
                 self.anniversary_black = True
 
     def anniversary2024_unbox(self):
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~anniversary2024CardService~unbox'
-        response = self.do_request(url, {})
-        if response and response.get('success'):
-            account_info = response.get('obj', {}).get('account', {})
-            unbox_list = [f"[{item['currency']}]X{item['amount']}" for item in
-                          account_info.get('receivedAccountList', [])]
-            print('拆盒子: %s' % ', '.join(unbox_list) or '空气')
-        else:
-            error_message = response.get('errorMessage') or json.dumps(response) or '无返回'
-            print('拆盒子失败: %s' % error_message)
-            if '用户手机号校验未通过' in error_message:
                 self.anniversary_black = True
 
     def anniversary2024_game_list(self):
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~anniversary2024GameParkService~list'
-        response = self.do_request(url, {})
-        try:
-            if response['success']:
-                topic_pk_info = response['obj'].get('topicPKInfo', {})
-                search_word_info = response['obj'].get('searchWordInfo', {})
-                happy_elimination_info = response['obj'].get('happyEliminationInfo', {})
-
-                if not topic_pk_info.get('isPassFlag'):
-                    print('开始话题PK赛')
-                    # 这里调用话题PK赛列表相关函数
-                    self.anniversary2024_TopicPk_topicList()
-
-                if not search_word_info.get('isPassFlag') or not search_word_info.get('isFinishDailyFlag'):
-                    print('开始找字游戏')
-                    for i in range(1, 11):
-                        wait_time = random.randint(1000, 3000) / 1000.0  # 转换为秒
-                        time.sleep(wait_time)
-                        if not self.anniversary2024_SearchWord_win(i):
-                            break
-
-                if not happy_elimination_info.get('isPassFlag') or not happy_elimination_info.get('isFinishDailyFlag'):
-                    print('开始消消乐')
-                    for i in range(1, 31):
-                        wait_time = random.randint(2000, 4000) / 1000.0  # 转换为秒
-                        time.sleep(wait_time)
-                        if not self.anniversary2024_HappyElimination_win(i):
-                            break
-            else:
-                error_message = response['errorMessage'] or json.dumps(response) or '无返回'
-                print('查询游戏状态失败: ' + error_message)
-                if '用户手机号校验未通过' in error_message:
-                    self.anniversary_black = True
-        except Exception as e:
             print(str(e))
 
     def anniversary2024_SearchWord_win(self, index):
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~anniversary2024SearchWordService~win'
-        success = True
-        try:
-            data = {'index': index}
-            response = self.do_request(url, data)
-            if response and response.get('success'):
-                currency_list = response.get('obj', {}).get('currencyDTOList', [])
-                rewards = ', '.join([f"[{c.get('currency')}]X{c.get('amount')}" for c in currency_list])
-                print(f'找字游戏第{index}关通关成功: {rewards if rewards else "未获得奖励"}')
-            else:
-                error_message = response.get('errorMessage') or json.dumps(response) or '无返回'
-                print(f'找字游戏第{index}关失败: {error_message}')
-                if '系统繁忙' in error_message:
-                    success = False
-        except Exception as e:
-            print(e)
-        finally:
             return success
 
     def anniversary2024_HappyElimination_win(self, index):
-        url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~anniversary2024HappyEliminationService~win'
-        success = True
-        data = {'index': index}
-        response = self.do_request(url, data)
-        try:
-            if response and response.get('success'):
-                is_award = response['obj'].get('isAward')
-                currency_dto_list = response['obj'].get('currencyDTOList', [])
-                rewards = ', '.join([f"[{c.get('currency')}]X{c.get('amount')}" for c in currency_dto_list])
-                print(f'第{index}关通关: {rewards if rewards else "未获得奖励"}')
-            else:
-                error_message = response.get('errorMessage') or json.dumps(response) or '无返回'
-                print(f'第{index}关失败: {error_message}')
-                if '系统繁忙' in error_message:
-                    success = False
-        except Exception as e:
-            print(e)
-            success = False
-        finally:
             return success
 
     def anniversary2024_TopicPk_chooseSide(self, index):
@@ -1699,7 +1435,7 @@ def down_file(filename, file_url):
 
 
 if __name__ == '__main__':
-    APP_NAME = 'SFSY2'
+    APP_NAME = '顺丰速运'
     ENV_NAME = 'SFSY2'
     CK_NAME = 'url'
     print(f'''
